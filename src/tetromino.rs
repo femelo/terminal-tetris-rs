@@ -56,5 +56,5 @@ pub fn does_piece_fit(field: &assets::FIELD, piece_id: i32, rotation_id: i32, p_
             }
         }
     }
-	return true
+    return true
 }

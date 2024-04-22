@@ -42,9 +42,9 @@ pub fn does_piece_fit(field: &assets::FIELD, piece_id: i32, rotation_id: i32, p_
             let f_idx : usize = (f_y * assets::FIELD_WIDTH + f_x).try_into().unwrap(); 
 
             // Check that test is in bounds. Note out of bounds does
-			// not necessarily mean a fail, as the long vertical piece
-			// can have cells that lie outside the boundary, so we'll
-			// just ignore them
+            // not necessarily mean a fail, as the long vertical piece
+            // can have cells that lie outside the boundary, so we'll
+            // just ignore them
             let id : usize = piece_id.try_into().unwrap();
             if (f_x >= 0) & (f_x < assets::FIELD_WIDTH) {
                 if (f_y >= 0) & (f_y < assets::FIELD_HEIGHT) {

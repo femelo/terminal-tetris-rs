@@ -54,16 +54,16 @@ fn main() {
         // Force the piece down the playfield if it's time
         if force_down {
             // Update difficulty every 50 pieces
-			speed_count = 0;
-			piece_count += 1;
-			if piece_count % 50 == 0 {
-				if speed >= 10 {
+            speed_count = 0;
+            piece_count += 1;
+            if piece_count % 50 == 0 {
+                if speed >= 10 {
                     speed -= 1;
                 };
             }
 
             // Test if piece can be moved down
-			if tetromino::does_piece_fit(&field, piece_id, rotation_id, x, y + 1) {
+            if tetromino::does_piece_fit(&field, piece_id, rotation_id, x, y + 1) {
                 y += 1; // it can, so do it!
             } else {
                 // It can't! lock the piece in place
@@ -103,7 +103,7 @@ fn main() {
                     score += (1 << v_lines.len() as u8) * 100;
                 }
 
-				// Pick new piece
+                // Pick new piece
                 x = assets::FIELD_WIDTH / 2;
                 y = 0;
                 rotation_id = 0;

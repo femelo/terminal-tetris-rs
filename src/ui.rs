@@ -1,8 +1,8 @@
 
 // use gettextrs::{*, LocaleCategory};
 use ncurses::*;
-use std::{thread, time};
-use crate::{assets, tetromino};
+use std::{error, thread, time};
+use crate::{assets, colors, tetromino};
 
 pub struct Size {
     pub lines : i32,
@@ -14,7 +14,7 @@ pub struct Origin {
     pub x : i32
 }
 
-pub fn init_screen() -> Size
+pub fn init_screen() -> Result<Size, Box<dyn error::Error>>
 {
     /* Set LC_ALL */
     // setLocale(LocaleCategory::LcAll, "");
@@ -23,6 +23,22 @@ pub fn init_screen() -> Size
     initscr();
     raw();
     keypad(stdscr(), true);
+    cbreak();
+    noecho();
+
+    if !has_colors() {
+        endwin();
+        return Err("Your terminal does not support color.\n".into());
+    }
+
+    start_color();
+    colors::init_color_pairs();
+
+    if (LINES() < 24) || (COLS() < 80) {
+        endwin();
+        return Err("Your terminal needs to be at least 80 x 24.\n".into());
+    }
+
     /* Update the screen. */
     refresh();
 
@@ -37,7 +53,7 @@ pub fn init_screen() -> Size
     let mut m_y : i32 = 0;
     getmaxyx(stdscr(), &mut m_y, &mut m_x);
     let screen_size : Size =  Size {lines: m_y, columns: m_x};
-    screen_size
+    Ok(screen_size)
 }
 
 pub fn close_screen(win: WINDOW)
@@ -114,8 +130,10 @@ pub fn draw_piece(win: &WINDOW, x: i32, y: i32, piece_id: i32, rotation_id: i32)
 
 pub fn draw_score(position: &Origin, score: i32) {
     // Draw Score
-    let score_str : String = format!("SCORE: {:08}", score);
+    let score_str : String = format!("SCORE: {:05}", score);
+    colors::set_color(1, 0);
     mvaddstr(position.y, position.x, &score_str).unwrap();
+    colors::unset_color(1, 0);
 }
 
 pub fn animate_completion(win: &WINDOW, field : &mut assets::FIELD, v_lines : &Vec<i32>) {

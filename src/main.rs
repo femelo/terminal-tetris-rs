@@ -3,16 +3,20 @@ extern crate ncurses;
 mod assets;
 mod tetromino;
 mod input;
+mod colors;
 mod ui;
 
-use std::{thread, time};
+use std::{error, thread, time};
 use rand::Rng;
 use ncurses::*;
 use ui::{Origin, Size};
 
-fn main() {
+fn main() -> Result<(), Box<dyn error::Error>>  {
     /* Init screen */
-    let screen_size : Size = ui::init_screen();
+    let screen_size : Size = match ui::init_screen() {
+        Ok(size) => size,
+        Err(e) => return Err(e)
+    };
 
     /* Start field in the center. */
     let start_y = (screen_size.lines - (assets::WINDOW_HEIGHT as i32)) / 2;
@@ -132,4 +136,5 @@ fn main() {
     }
 
     ui::close_screen(win);
+    Ok(())
 }

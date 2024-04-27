@@ -3,7 +3,7 @@
 Play Tetris on a terminal emulator (Rust implementation).
 Based on this [video](https://www.youtube.com/watch?v=8OK8_tHeCIA).
 
-[terminal-tetris-rs.webm](https://github.com/femelo/terminal-tetris-rs/assets/28808345/c670efc5-349b-40d8-baf2-c0e926175fad)
+![terminal-tetris](https://github.com/femelo/terminal-tetris-rs/assets/28808345/7ce3ce3e-b733-4837-b348-a2cc53cd60a3)
 
 ## Dependencies
 

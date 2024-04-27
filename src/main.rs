@@ -23,10 +23,10 @@ fn main() -> Result<(), Box<dyn error::Error>>  {
     let start_x = (screen_size.columns - (assets::WINDOW_WIDTH as i32)) / 2;
     let field_origin : Origin = Origin{y: start_y, x: start_x};
     let field_size : Size = Size{lines: assets::FIELD_HEIGHT, columns: assets::FIELD_WIDTH};
-    let score_position : Origin = Origin{y: start_y - 2, x: start_x + 2};
+    let score_position : Origin = Origin{y: start_y - 3, x: start_x + 2};
 
     /* Status/help info. */
-    ui::draw_score(&score_position, 0);
+    ui::draw_score(&score_position, 0, false);
 
     let win : WINDOW = ui::create_win(field_origin, field_size);
 
@@ -125,12 +125,15 @@ fn main() -> Result<(), Box<dyn error::Error>>  {
         // Draw Current Piece
         ui::draw_piece(&win, x, y, piece_id, rotation_id);
 
-        // Draw score
-        ui::draw_score(&score_position, score);
-
         // Animate completion
         ui::animate_completion(&win, &mut field, &v_lines);
-        v_lines.clear();
+        if v_lines.len() > 0 {
+            // Draw score
+            ui::draw_score(&score_position, score, true);
+            v_lines.clear();
+        } else {
+            ui::draw_score(&score_position, score, false);
+        }
         // Refresh frame
         wrefresh(win);
     }

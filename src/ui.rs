@@ -169,12 +169,29 @@ pub fn draw_piece(win: &WINDOW, x: i32, y: i32, piece_id: i32, rotation_id: i32)
     }
 }
 
-pub fn draw_score(position: &Origin, score: i32) {
-    // Draw Score
-    let score_str : String = format!("SCORE: {:08}", score);
-    colors::set_color(3 + 8, 0, None);
+pub fn draw_score(position: &Origin, score: i32, highlight: bool) {
+    // Set string
+    let score_str : String = format!("SCORE: {:width$}", score, width=(2 * assets::FIELD_WIDTH as usize) - 11);
+    let fg : i16;
+    let bg : i16 = 0;
+    if highlight {
+        fg = 7 + 8;
+    } else {
+        fg = 3 + 8;
+    }
+    // Draw score box
+    colors::set_color(fg, bg, None);
+    mvhline(position.y - 1, position.x, ACS_HLINE(), score_str.len() as i32);
+    mvaddch(position.y - 1, position.x - 1, ACS_ULCORNER());
+    mvaddch(position.y - 1, position.x + (score_str.len() as i32), ACS_URCORNER());
+    mvvline(position.y, position.x - 1, ACS_VLINE(), 1);
+    mvvline(position.y, position.x + (score_str.len() as i32), ACS_VLINE(), 1);
+    mvhline(position.y + 1, position.x, ACS_HLINE(), score_str.len() as i32);
+    mvaddch(position.y + 1, position.x - 1, ACS_LLCORNER());
+    mvaddch(position.y + 1, position.x + (score_str.len() as i32), ACS_LRCORNER());
+    // Draw score
     mvaddstr(position.y, position.x, &score_str).unwrap();
-    colors::unset_color(3 + 8, 0, None);
+    colors::unset_color(fg, bg, None);
 }
 
 pub fn animate_completion(win: &WINDOW, field : &mut assets::FIELD, v_lines : &Vec<i32>) {

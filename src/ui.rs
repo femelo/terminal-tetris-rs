@@ -104,13 +104,37 @@ pub fn build_field() -> assets::FIELD {
     field
 }
 
+pub fn get_piece_color_id(piece_char : char) -> i16 {
+    let mut color_id: i16 = 0;
+    for i in 0..tetromino::PIECE_CHARS.len() {
+        if piece_char == tetromino::PIECE_CHARS[i] {
+            color_id = (i as i16) + 1;
+            break;
+        }
+    }
+    color_id
+}
+
 pub fn draw_field(win: &WINDOW, field: &assets::FIELD) {
     // Draw Field
     let mut f_idx : usize;
+    let mut color_id: i16;
+    let mut fg: i16;
+    let mut bg: i16;
     for i in 1..assets::FIELD_WIDTH - 1 {
         for j in 0..assets::FIELD_HEIGHT - 1 {
             f_idx = (j * assets::FIELD_WIDTH + i).try_into().unwrap();
+            color_id = get_piece_color_id(field[f_idx]);
+            if color_id > 0 {
+                fg = color_id;
+                bg = color_id;
+            } else {
+                fg = 7 + 8;
+                bg = color_id;
+            }
+            colors::set_color(fg, bg, Some(win)); 
             mvwaddch(win.clone(), j, i, field[f_idx] as chtype);
+            colors::unset_color(fg, bg, Some(win)); 
         }
     }
 }
@@ -118,11 +142,15 @@ pub fn draw_field(win: &WINDOW, field: &assets::FIELD) {
 pub fn draw_piece(win: &WINDOW, x: i32, y: i32, piece_id: i32, rotation_id: i32) {
     let mut p_idx : usize;
     let idx : usize = piece_id.try_into().unwrap();
+    let mut color_id : i16;
     for i in 0..tetromino::TETROMINO_WIDTH {
         for j in 0..tetromino::TETROMINO_HEIGHT {
             p_idx = tetromino::rotate(i, j, rotation_id);
             if tetromino::TETROMINOS[idx].chars().nth(p_idx).unwrap() != '.' {
+                color_id = (piece_id as i16) + 1;
+                colors::set_color(color_id, color_id, Some(win));
                 mvwaddch(win.clone(), y + j, x + i, tetromino::PIECE_CHARS[idx] as chtype);
+                colors::unset_color(color_id, color_id, Some(win));
             }
         }
     }
@@ -131,9 +159,9 @@ pub fn draw_piece(win: &WINDOW, x: i32, y: i32, piece_id: i32, rotation_id: i32)
 pub fn draw_score(position: &Origin, score: i32) {
     // Draw Score
     let score_str : String = format!("SCORE: {:05}", score);
-    colors::set_color(1, 0);
+    colors::set_color(3 + 8, 0, None);
     mvaddstr(position.y, position.x, &score_str).unwrap();
-    colors::unset_color(1, 0);
+    colors::unset_color(3 + 8, 0, None);
 }
 
 pub fn animate_completion(win: &WINDOW, field : &mut assets::FIELD, v_lines : &Vec<i32>) {

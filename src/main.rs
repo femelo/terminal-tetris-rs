@@ -95,7 +95,7 @@ fn main() -> Result<(), Box<dyn error::Error>>  {
                             // Remove Line
                             for p_x in 1..assets::FIELD_WIDTH - 1 {
                                 f_id = ((y + j) * assets::FIELD_WIDTH + p_x).try_into().unwrap();
-                                field[f_id] = '=';
+                                field[f_id] = 'x';
                             }
                             v_lines.push(y + j);
                         }

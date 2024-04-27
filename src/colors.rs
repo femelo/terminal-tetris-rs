@@ -52,19 +52,33 @@ pub fn is_bold(fg: i16) -> bool {
     return i & fg != 0;
 }
 
-pub fn set_color(fg: i16, bg: i16) {
+pub fn set_color(fg: i16, bg: i16, window : Option<&WINDOW>) {
     /* Set the color pair (color_num) and bold/bright (A_BOLD) */
-    attron(COLOR_PAIR(color_num(fg, bg)));
-    if is_bold(fg) {
-        attron(A_BOLD);
-    }
+    if let Some(win) = window {
+        wattr_on(win.clone(), COLOR_PAIR(color_num(fg, bg)));
+        if is_bold(fg) {
+            wattron(win.clone(), A_BOLD);
+        }
+    } else {
+        attron(COLOR_PAIR(color_num(fg, bg)));
+        if is_bold(fg) {
+            attron(A_BOLD);
+        }
+    }    
 }
 
-pub fn unset_color(fg: i16, bg: i16)
+pub fn unset_color(fg: i16, bg: i16, window : Option<&WINDOW>)
 {
     /* Unset the color pair (colornum) and bold/bright (A_BOLD) */
-    attroff(COLOR_PAIR(color_num(fg, bg)));
-    if is_bold(fg) {
-        attroff(A_BOLD);
+    if let Some(win) = window {
+        wattr_off(win.clone(), COLOR_PAIR(color_num(fg, bg)));
+        if is_bold(fg) {
+            wattr_off(win.clone(), A_BOLD);
+        }
+    } else {
+        attroff(COLOR_PAIR(color_num(fg, bg)));
+        if is_bold(fg) {
+            attroff(A_BOLD);
+        }
     }
 }

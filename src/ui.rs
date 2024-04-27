@@ -128,6 +128,7 @@ pub fn draw_field(win: &WINDOW, field: &assets::FIELD) {
     let mut color_id: i16;
     let mut fg: i16;
     let mut bg: i16;
+    let mut ch: chtype;
     for i in 1..assets::FIELD_WIDTH - 1 {
         for j in 0..assets::FIELD_HEIGHT - 1 {
             f_idx = (j * assets::FIELD_WIDTH + i).try_into().unwrap();
@@ -140,10 +141,11 @@ pub fn draw_field(win: &WINDOW, field: &assets::FIELD) {
                 bg = color_id;
             }
             colors::set_color(fg, bg, Some(win));
-            // mvwaddch(win.clone(), j, i, field[f_idx] as chtype);
+            ch = if field[f_idx] != 'x' {field[f_idx] as chtype} else {ACS_DIAMOND() as chtype};
+            // mvwaddch(win.clone(), j, i, ch);
             /* This is a hack so that each block has aspect ratio 1:1 */
-            mvwaddch(win.clone(), j, 2 * i, field[f_idx] as chtype);
-            mvwaddch(win.clone(), j, 2 * i + 1, field[f_idx] as chtype);
+            mvwaddch(win.clone(), j, 2 * i, ch);
+            mvwaddch(win.clone(), j, 2 * i + 1, ch);
             colors::unset_color(fg, bg, Some(win)); 
         }
     }

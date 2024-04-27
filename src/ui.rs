@@ -68,12 +68,19 @@ pub fn close_screen(win: WINDOW)
 pub fn create_win(origin: Origin, size: Size) -> WINDOW
 {   
     let win : WINDOW;
-    win = newwin(size.lines, size.columns, origin.y, origin.x);
-    mvwvline(win, 0, 0, ACS_VLINE(), size.lines - 1);
-    mvwvline(win, 0, size.columns - 1, ACS_VLINE(), size.lines - 1);
-    mvwhline(win, size.lines - 1, 1, ACS_HLINE(), size.columns - 2);
-    mvwaddch(win, size.lines - 1, 0, ACS_LLCORNER());
-    mvwaddch(win, size.lines - 1, size.columns - 1, ACS_LRCORNER());
+    // win = newwin(size.lines, size.columns, origin.y, origin.x);
+    // mvwvline(win, 0, 0, ACS_VLINE(), size.lines - 1);
+    // mvwvline(win, 0, size.columns - 1, ACS_VLINE(), size.lines - 1);
+    // mvwhline(win, size.lines - 1, 1, ACS_HLINE(), size.columns - 2);
+    // mvwaddch(win, size.lines - 1, 0, ACS_LLCORNER());
+    // mvwaddch(win, size.lines - 1, size.columns - 1, ACS_LRCORNER());
+    /* This is a hack so that each block has aspect ratio 1:1 */
+    win = newwin(size.lines, 2 * size.columns, origin.y, origin.x);
+    mvwvline(win, 0, 1, ACS_VLINE(), size.lines - 1);
+    mvwvline(win, 0, 2 * (size.columns - 1), ACS_VLINE(), size.lines - 1);
+    mvwhline(win, size.lines - 1, 2, ACS_HLINE(), 2 * (size.columns - 1) - 1);
+    mvwaddch(win, size.lines - 1, 1, ACS_LLCORNER());
+    mvwaddch(win, size.lines - 1, 2 * (size.columns - 1), ACS_LRCORNER());
     wrefresh(win);
     win
 }
@@ -92,7 +99,7 @@ pub fn build_field() -> assets::FIELD {
         field.push(assets::V_BORDER);
         for _i in 1..assets::FIELD_WIDTH-1 {
             let c : char;
-            if j == assets::FIELD_HEIGHT-1 {
+            if j == assets::FIELD_HEIGHT - 1 {
                 c = assets::H_BORDER;
             } else {
                 c = ' ';
@@ -132,8 +139,11 @@ pub fn draw_field(win: &WINDOW, field: &assets::FIELD) {
                 fg = 7 + 8;
                 bg = color_id;
             }
-            colors::set_color(fg, bg, Some(win)); 
-            mvwaddch(win.clone(), j, i, field[f_idx] as chtype);
+            colors::set_color(fg, bg, Some(win));
+            // mvwaddch(win.clone(), j, i, field[f_idx] as chtype);
+            /* This is a hack so that each block has aspect ratio 1:1 */
+            mvwaddch(win.clone(), j, 2 * i, field[f_idx] as chtype);
+            mvwaddch(win.clone(), j, 2 * i + 1, field[f_idx] as chtype);
             colors::unset_color(fg, bg, Some(win)); 
         }
     }
@@ -149,7 +159,10 @@ pub fn draw_piece(win: &WINDOW, x: i32, y: i32, piece_id: i32, rotation_id: i32)
             if tetromino::TETROMINOS[idx].chars().nth(p_idx).unwrap() != '.' {
                 color_id = (piece_id as i16) + 1;
                 colors::set_color(color_id, color_id, Some(win));
-                mvwaddch(win.clone(), y + j, x + i, tetromino::PIECE_CHARS[idx] as chtype);
+                // mvwaddch(win.clone(), y + j, x + i, tetromino::PIECE_CHARS[idx] as chtype);
+                /* This is a hack so that each block has aspect ratio 1:1 */
+                mvwaddch(win.clone(), y + j, 2 * (x + i), tetromino::PIECE_CHARS[idx] as chtype);
+                mvwaddch(win.clone(), y + j, 2 * (x + i) + 1, tetromino::PIECE_CHARS[idx] as chtype);
                 colors::unset_color(color_id, color_id, Some(win));
             }
         }
@@ -158,7 +171,7 @@ pub fn draw_piece(win: &WINDOW, x: i32, y: i32, piece_id: i32, rotation_id: i32)
 
 pub fn draw_score(position: &Origin, score: i32) {
     // Draw Score
-    let score_str : String = format!("SCORE: {:05}", score);
+    let score_str : String = format!("SCORE: {:08}", score);
     colors::set_color(3 + 8, 0, None);
     mvaddstr(position.y, position.x, &score_str).unwrap();
     colors::unset_color(3 + 8, 0, None);

@@ -23,7 +23,7 @@ fn main() -> Result<(), Box<dyn error::Error>>  {
     let start_x = (screen_size.columns - (assets::WINDOW_WIDTH as i32)) / 2;
     let field_origin : Origin = Origin{y: start_y, x: start_x};
     let field_size : Size = Size{lines: assets::FIELD_HEIGHT, columns: assets::FIELD_WIDTH};
-    let score_position : Origin = Origin{y: start_y - 2, x: start_x};
+    let score_position : Origin = Origin{y: start_y - 2, x: start_x + 2};
 
     /* Status/help info. */
     ui::draw_score(&score_position, 0);
@@ -38,7 +38,7 @@ fn main() -> Result<(), Box<dyn error::Error>>  {
     let mut piece_id : i32 = 0;
     let mut rotation_id : i32 = 0;
     let mut x : i32 = assets::FIELD_WIDTH / 2;
-    let mut y : i32 = assets::FIELD_WIDTH / 2;
+    let mut y : i32 = assets::FIELD_HEIGHT / 2;
     let mut speed : i32 = 50;
     let mut speed_count : i32 = 0;
     let mut force_down : bool;

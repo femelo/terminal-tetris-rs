@@ -25,7 +25,7 @@ fn main() -> Result<(), Box<dyn error::Error>>  {
     let field_size : Size = Size{lines: assets::FIELD_HEIGHT, columns: assets::FIELD_WIDTH};
     let score_position : Origin = Origin{y: start_y - 3, x: start_x + 2};
 
-    /* Status/help info. */
+    /* Score info */
     ui::draw_score(&score_position, 0, false);
 
     let win : WINDOW = ui::create_win(field_origin, field_size);
@@ -102,13 +102,14 @@ fn main() -> Result<(), Box<dyn error::Error>>  {
                     }
                 }
 
+                // +25 per settled piece, +100 * 2^n for 'n' completed lines
                 score += 25;
                 if v_lines.len() > 0 {
                     score += (1 << v_lines.len() as u8) * 100;
                 }
 
                 // Pick new piece
-                x = assets::FIELD_WIDTH / 2;
+                x = (assets::FIELD_WIDTH - tetromino::TETROMINO_WIDTH) / 2;
                 y = 0;
                 rotation_id = 0;
                 piece_id = (rng.gen::<u32>() % 7).try_into().unwrap();

@@ -11,7 +11,9 @@ const COLOR_WHITE : i16 = 7;
 
 const A_BOLD : u32 = 1 << (13 + 8);
 
-
+/** Helper functions for setting colors
+    Reference: https://www.linuxjournal.com/content/about-ncurses-colors-0
+**/
 pub fn color_num(fg : i16, bg: i16) -> i16 {
     let b : i16 = 1 << 7;
     let bbb : i16 = (7 & bg) << 4;
@@ -69,7 +71,7 @@ pub fn set_color(fg: i16, bg: i16, window : Option<&WINDOW>) {
 
 pub fn unset_color(fg: i16, bg: i16, window : Option<&WINDOW>)
 {
-    /* Unset the color pair (colornum) and bold/bright (A_BOLD) */
+    /* Unset the color pair (color_num) and bold/bright (A_BOLD) */
     if let Some(win) = window {
         wattr_off(win.clone(), COLOR_PAIR(color_num(fg, bg)));
         if is_bold(fg) {

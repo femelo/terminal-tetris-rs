@@ -12,7 +12,9 @@ const COLOR_WHITE : i16 = 7;
 const A_BOLD : u32 = 1 << (13 + 8);
 
 /** Helper functions for setting colors
-    Reference: https://www.linuxjournal.com/content/about-ncurses-colors-0
+    References:
+    - https://www.linuxjournal.com/content/about-ncurses-colors-0
+    - https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/color.html
 **/
 pub fn color_num(fg : i16, bg: i16) -> i16 {
     let b : i16 = 1 << 7;
